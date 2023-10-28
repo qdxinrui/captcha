@@ -1,12 +1,14 @@
 <?php
 use Illuminate\Container\Container;
+use Illuminate\Contracts\Foundation\Application;
+
 if (! function_exists('app')) {
     /**
      * Get the available container instance.
      *
      * @param  string|null  $abstract
      * @param  array  $parameters
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Foundation\Application|mixed
+     * @return \Illuminate\Contracts\Foundation\Application|mixed
      */
     function app($abstract = null, array $parameters = [])
     {
