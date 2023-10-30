@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\Response;
  */
 class Captcha{
     protected $config = [
-        'seKey'         => 'ThinkPHP.CN',
+        'seKey'         => 'QDXINRUI.COM',
         // 验证码加密密钥
         'codeSet'       => '2345678abcdefhijkmnpqrstuvwxyzABCDEFGHJKLMNPQRTUVWXY',
         // 验证码字符集合
@@ -98,6 +98,33 @@ class Captcha{
     public function __isset(string $name)
     {
         return isset($this->config[$name]);
+    }
+    /**
+     * 验证验证码是否正确
+     * @access public
+     * @param string $code 用户验证码
+     * @param string $id   验证码标识
+     * @return bool 用户验证码是否正确
+     */
+    public function check(string $code, string $id = '') :bool{
+        $key = $this->authcode($this->seKey) . $id;
+        // 验证码不能为空
+        $secode = Cache::get($key, '');
+        if (empty($code) || empty($secode)) {
+            return false;
+        }
+        // session 过期
+        if (time() - $secode['verify_time'] > $this->expire) {
+            Cache::delete($key);
+            return false;
+        }
+
+        if ($this->authcode(strtoupper($code)) == $secode['verify_code']) {
+            $this->reset && Cache::delete($key);
+            return true;
+        }
+
+        return false;
     }
     /**
      * 输出验证码并把验证码的值保存的Cache中
